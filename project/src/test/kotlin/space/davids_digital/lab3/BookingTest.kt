@@ -12,16 +12,18 @@ import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxBinary
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
-import space.davids_digital.lab3.pages.AnonymousLandingPage
+import space.davids_digital.lab3.pages.MainPage
+import space.davids_digital.lab3.pages.SearchResultsPage
 import java.io.File
 import java.util.*
 import java.util.stream.Stream
 
 
 @TestInstance(PER_METHOD)
-class GoogleDriveTest {
+class BookingTest {
     companion object {
-        private const val SETTINGS_FILE = "/settings.properties"
+        private const val SETTINGS_FILE_PATH = "/settings.properties"
+
         lateinit var props: Properties
 
         @BeforeAll
@@ -29,9 +31,9 @@ class GoogleDriveTest {
         fun initEverything() {
             props = Properties()
             try {
-                props.load(this::class.java.getResourceAsStream(SETTINGS_FILE))
+                props.load(this::class.java.getResourceAsStream(SETTINGS_FILE_PATH))
             } catch (e: NullPointerException) {
-                fail("Settings file '$SETTINGS_FILE' not found")
+                fail("Settings file '$SETTINGS_FILE_PATH' not found")
             }
             System.setProperty("webdriver.gecko.driver", props.getProperty("browsers.firefox.driver"))
             System.setProperty("webdriver.chrome.driver", props.getProperty("browsers.chrome.driver"))
@@ -42,7 +44,7 @@ class GoogleDriveTest {
             // todo make configurable
             return Stream.of(
                 makeFirefoxDriver(),
-                makeChromeDriver()
+//                makeChromeDriver()
             )
         }
 
@@ -61,18 +63,17 @@ class GoogleDriveTest {
 
     @ParameterizedTest
     @MethodSource("provideWebDrivers")
-    fun dummyTest(driver: WebDriver) {
-        driver.get("https://drive.google.com")
-        val page = AnonymousLandingPage(driver)
-        Thread.sleep(8000)
-        driver.quit()
+    fun `test searching`(driver: WebDriver) {
+        driver.get("https://booking.com")
+        val mainPage = MainPage(driver)
+        Thread.sleep(2000)
+        mainPage.closeCookiesPromptIfShowed()
+        mainPage.typeIntoSearchBox("Ivanovo")
+        mainPage.pickSearchDates()
+        mainPage.clickSearchButton()
+        val resultsPage = SearchResultsPage(driver)
+        resultsPage.getSearchResults().forEach {
+            println(it.getLocation())
+        }
     }
-
-//    @ParameterizedTest
-//    @MethodSource("provideWebDrivers")
-//    fun dummyTest2(driver: WebDriver) {
-//        driver.get("https://ya.ru")
-//        Thread.sleep(10000)
-//        driver.quit()
-//    }
 }

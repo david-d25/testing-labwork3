@@ -13,7 +13,6 @@
         <maven.compiler.target>11</maven.compiler.target>
         <kotlin.version>1.4.32</kotlin.version>
         <selenium.version>3.141.59</selenium.version>
-        <google-api.version>1.23.0</google-api.version>
     </properties>
 
     <dependencies>
@@ -65,12 +64,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
             <version>${selenium.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>${google-api.version}</version>
         </dependency>
 
     </dependencies>
