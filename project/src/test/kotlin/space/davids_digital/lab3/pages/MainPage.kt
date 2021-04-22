@@ -2,6 +2,8 @@ package space.davids_digital.lab3.pages
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
 import space.davids_digital.lab3.hasElement
 
 private const val EXPECTED_PAGE_URL = "https://www.booking.com/"
@@ -17,6 +19,10 @@ class MainPage(private val driver: WebDriver) {
     init {
         if (driver.currentUrl != EXPECTED_PAGE_URL)
             throw IllegalStateException("Expected url '$EXPECTED_PAGE_URL', but it's '${driver.currentUrl}'")
+    }
+
+    fun tryWaitForCookiesPrompt() {
+        WebDriverWait(driver, 5).until { driver.hasElement(ACCEPT_COOKIES_BUTTON) }
     }
 
     fun closeCookiesPromptIfShowed() {
