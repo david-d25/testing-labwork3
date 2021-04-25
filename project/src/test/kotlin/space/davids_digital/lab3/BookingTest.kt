@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.openqa.selenium.WebDriver
+import space.davids_digital.lab3.pages.HotelPage
 import space.davids_digital.lab3.pages.MainPage
 import space.davids_digital.lab3.pages.SearchResultsPage
 
@@ -85,19 +87,22 @@ class BookingTest {
         assertEquals(6, resultsPage.getAsideFilterChildAge(1))
         assertEquals(7, resultsPage.getAsideFilterChildAge(2))
         assertEquals(8, resultsPage.getAsideFilterChildAge(3))
-//        val asideFilterAges = arrayOf(
-//            resultsPage.getAsideFilterChildAge(0),
-//            resultsPage.getAsideFilterChildAge(1),
-//            resultsPage.getAsideFilterChildAge(2),
-//            resultsPage.getAsideFilterChildAge(3)
-//        ).sorted()
-//        assertEquals(arrayOf(5, 6, 7, 8), ages)
         assertTrue(resultsPage.isFilterBoxContainerPresent())
 
+        resultsPage.clickMenubarItem(2)
+        assertTrue(resultsPage.getSearchResults().isNotEmpty())
+        resultsPage.getSearchResults()[0].go()
+        assertEquals(2, driver.windowHandles.size) // Opened in new tab
+        driver.switchTo().window(driver.windowHandles.toList()[1]) // Switching to new tab
+        assertDoesNotThrow { HotelPage(driver) } // Gone to right page
+    }
 
-        // todo select other tab
-        // todo in other test function, check 'show on map'
-        // todo make main page test and test adults/children/rooms buttons and label, also check currency change, also check language change
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `show on map buttons`(driver: WebDriver) {
+        this.driver = driver
+
+        // todo
     }
 
     @AfterEach

@@ -2,10 +2,7 @@ package space.davids_digital.lab3.pages
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
-import org.openqa.selenium.support.ui.WebDriverWait
-import space.davids_digital.lab3.hasElement
 import java.text.MessageFormat
 
 // todo move to test
@@ -16,7 +13,7 @@ const val MAX_CHILDREN_NUM = 10
 const val MIN_ROOMS_NUM = 0
 const val MAX_ROOMS_NUM = 10
 
-private const val EXPECTED_PAGE_URL = "https://www.booking.com/"
+private const val EXPECTED_PAGE_URL_PREFIX = "https://www.booking.com/index"
 
 private val SEARCH_INPUT = By.xpath("//input[@name='ss']")
 private val SEARCH_BUTTON = By.xpath("//form[@id='frm']//button[@type='submit']")
@@ -38,8 +35,8 @@ private val CHILD_AGE_SELECT_PATTERN = MessageFormat("//*[@id=''xp__guests__inpu
 
 class MainPage(private val driver: WebDriver) {
     init {
-        if (driver.currentUrl != EXPECTED_PAGE_URL)
-            throw IllegalStateException("Expected url '$EXPECTED_PAGE_URL', but it's '${driver.currentUrl}'")
+        if (!driver.currentUrl.startsWith(EXPECTED_PAGE_URL_PREFIX))
+            throw IllegalStateException("Expected url '$EXPECTED_PAGE_URL_PREFIX', but it's '${driver.currentUrl}'")
     }
 
     fun typeIntoSearchBox(text: String) {

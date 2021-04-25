@@ -1,18 +1,17 @@
 package space.davids_digital.lab3.pages
 
-import org.junit.platform.commons.logging.LoggerFactory
 import org.openqa.selenium.*
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
 import org.openqa.selenium.support.ui.WebDriverWait
 import space.davids_digital.lab3.hasElement
-import java.lang.RuntimeException
 import java.text.MessageFormat
 import java.time.Duration
 
 private const val EXPECTED_PAGE_URL_PREFIX = "https://www.booking.com/searchresults"
 
 private val SEARCH_RESULTS = By.xpath("//*[@data-hotelid]")
+private val SEARCH_RESULT_TITLE_LINK = By.xpath(".//h3/a")
 private val FILTER_BOX_CONTAINER = By.xpath("//*[@id='filterbox_options']")
 private val FILTER_BOXES_UNUSED = By.xpath("//*[@id='filterbox_options']/*[@data-block-id='filter_options']/*[contains(concat(' ', normalize-space(@class), ' '), ' filterbox ') and not(contains(@class, 'g-hidden')) and not(contains(@class, 'filterbox_hide-in-list')) and not(contains(@style, 'display: none;'))][.//div[contains(@class, 'filteroptions') and not(contains(@class, 'filter_selected')) and count(.//a[contains(@class, 'active')])=0]]")
 private val FILTER_BOX_OPTIONS = By.xpath("./*[contains(@class, 'filteroptions')]/a[not(contains(@class, 'collapsed_partly'))]")
@@ -28,6 +27,7 @@ private val ASIDE_FORM_SEARCH = By.xpath("//form[@id='frm']//button[@type='submi
 private val ASIDE_FORM_DESTINATION = By.xpath("//form[@id='frm']//input[@name='ss']")
 private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_VISIBLE = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list') and contains(@class, '-visible')]")
 private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_ITEM = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list')]/li")
+private val MENUBAR_ITEM = By.xpath("//ul[@role='menubar']/li/a")
 
 private val ASIDE_FORM_CHILD_AGE_PATTERN = MessageFormat("//form[@id=''frm'']//select[@name=''age'' and @data-group-child-age=''{0}'']")
 
@@ -104,8 +104,13 @@ class SearchResultsPage(private val driver: WebDriver) {
     fun getUnusedFilterBoxes() = driver.findElements(FILTER_BOXES_UNUSED).map { FilterBox(it) }
     fun getSearchResults() = driver.findElements(SEARCH_RESULTS).map { Result(it) }
 
-    inner class Result(private val el: WebElement) {
+    fun clickMenubarItem(index: Int) {
+        driver.findElements(MENUBAR_ITEM)[index].click()
+        waitForFiltersToUpdate()
+    }
 
+    inner class Result(private val el: WebElement) {
+        fun go() = el.findElement(SEARCH_RESULT_TITLE_LINK).click()
     }
 
     inner class FilterBox(private val el: WebElement) {
