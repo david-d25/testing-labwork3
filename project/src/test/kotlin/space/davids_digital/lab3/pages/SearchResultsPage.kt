@@ -133,13 +133,6 @@ class SearchResultsPage(private val driver: WebDriver) {
                     .pollingEvery(Duration.ofMillis(500))
                     .until(ExpectedConditions.elementToBeClickable(el))
                     .click()
-
-                // todo remove of not needed
-//                try {
-//
-//                } catch (e: TimeoutException) {
-//                    LoggerFactory.getLogger(SearchResultsPage::class.java).warn(e) { "Could not click element $el" }
-//                }
                 waitForFiltersToUpdate()
             }
         }
