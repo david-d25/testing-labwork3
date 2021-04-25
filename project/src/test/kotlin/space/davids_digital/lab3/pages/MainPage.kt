@@ -5,14 +5,6 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.Select
 import java.text.MessageFormat
 
-// todo move to test
-const val MIN_ADULTS_NUM = 1
-const val MAX_ADULTS_NUM = 30
-const val MIN_CHILDREN_NUM = 0
-const val MAX_CHILDREN_NUM = 10
-const val MIN_ROOMS_NUM = 0
-const val MAX_ROOMS_NUM = 10
-
 private const val EXPECTED_PAGE_URL_PREFIX = "https://www.booking.com/index"
 
 private val SEARCH_INPUT = By.xpath("//input[@name='ss']")
