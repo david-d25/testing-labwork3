@@ -1,14 +1,14 @@
 package space.davids_digital.lab3
 
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.TestInfo
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import org.junit.jupiter.params.ParameterizedTest
-import org.openqa.selenium.Cookie
 import org.openqa.selenium.WebDriver
 import space.davids_digital.lab3.pages.MainPage
-import java.time.Instant
+import space.davids_digital.lab3.pages.SearchResultsPage
 
 @TestInstance(PER_METHOD)
 class BookingTest {
@@ -17,16 +17,89 @@ class BookingTest {
 
     @ParameterizedTest
     @ProvideWebDrivers
-    fun `search apartment`(driver: WebDriver) {
+    fun `search filters`(driver: WebDriver) {
         this.driver = driver
 
         driver.get("https://booking.com")
-        val mainPage = MainPage(driver)
-        mainPage.typeIntoSearchBox("Massachusetts")
-        mainPage.pickSearchDates()
-        Thread.sleep(999999)
-//        mainPage.clickSearchButton()
-//        val resultsPage = SearchResultsPage(driver)
+        with(MainPage(driver)) {
+            typeIntoSearchBox("Massachusetts")
+            pickSearchDates()
+            setAdultsNum(5)
+            setChildrenNum(3)
+            setChildAge(0, 10)
+            setChildAge(1, 8)
+            setChildAge(2, 12)
+            setRoomsNum(2)
+            clickSearchButton()
+        }
+
+        val resultsPage = SearchResultsPage(driver)
+
+        // Checking that search options applied correctly
+        assertTrue(resultsPage.isAsideFormPresent())
+        assertEquals("Massachusetts", resultsPage.getAsideFilterDestination())
+        assertEquals(5, resultsPage.getAsideFilterAdultsNumber())
+        assertEquals(3, resultsPage.getAsideFilterChildrenNumber())
+        assertEquals(2, resultsPage.getAsideFilterRoomsNumber())
+
+        // Children ages may change order, so it's needed to sort them before checking
+        val ages = listOf(
+            resultsPage.getAsideFilterChildAge(0),
+            resultsPage.getAsideFilterChildAge(1),
+            resultsPage.getAsideFilterChildAge(2)
+        ).sorted()
+        assertEquals(listOf(8, 10, 12), ages)
+
+        assertTrue(resultsPage.isFilterBoxContainerPresent())
+
+        // As filter elements re-build on each filter update, getFilterBoxes must be invoked instead of storing its result
+        // As filters number may change on filter update, it's required to use 'while' loop
+        var currentFilterIndex = 0
+        while (currentFilterIndex < resultsPage.getFilterBoxes().size) {
+            // Always choose the most popular option so there will be more results
+            resultsPage.getFilterBoxes()[currentFilterIndex].getOptions()
+                .maxByOrNull { it.getFilterCount() }
+                .let { it?.toggleSelection() }
+
+            currentFilterIndex++
+        }
+
+        with(resultsPage) {
+            setAsideFilterDestination("Podolsk")
+            selectAsideFilterAdultsNumber(2)
+            selectAsideFilterChildrenNumber(4)
+            selectAsideFilterRoomsNumber(1)
+            selectAsideFilterChildAge(0, 5)
+            selectAsideFilterChildAge(1, 6)
+            selectAsideFilterChildAge(2, 7)
+            selectAsideFilterChildAge(3, 8)
+            clickTravellingForWorkCheckbox()
+            clickAsideFilterSearchButton()
+        }
+
+        // Checking that aside form changes applied correctly
+        assertTrue(resultsPage.isAsideFormPresent())
+        assertEquals("Podolsk", resultsPage.getAsideFilterDestination())
+        assertEquals(2, resultsPage.getAsideFilterAdultsNumber())
+        assertEquals(4, resultsPage.getAsideFilterChildrenNumber())
+        assertEquals(1, resultsPage.getAsideFilterRoomsNumber())
+        assertEquals(5, resultsPage.getAsideFilterChildAge(0))
+        assertEquals(6, resultsPage.getAsideFilterChildAge(1))
+        assertEquals(7, resultsPage.getAsideFilterChildAge(2))
+        assertEquals(8, resultsPage.getAsideFilterChildAge(3))
+//        val asideFilterAges = arrayOf(
+//            resultsPage.getAsideFilterChildAge(0),
+//            resultsPage.getAsideFilterChildAge(1),
+//            resultsPage.getAsideFilterChildAge(2),
+//            resultsPage.getAsideFilterChildAge(3)
+//        ).sorted()
+//        assertEquals(arrayOf(5, 6, 7, 8), ages)
+        assertTrue(resultsPage.isFilterBoxContainerPresent())
+
+
+        // todo select other tab
+        // todo in other test function, check 'show on map'
+        // todo make main page test and test adults/children/rooms buttons and label, also check currency change, also check language change
     }
 
     @AfterEach

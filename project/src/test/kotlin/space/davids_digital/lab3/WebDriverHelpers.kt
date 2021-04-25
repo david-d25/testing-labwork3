@@ -14,6 +14,7 @@ import org.openqa.selenium.firefox.FirefoxOptions
 import java.io.File
 import java.time.Instant
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
 fun WebDriver.hasElement(by: By) = this.findElements(by).size > 0
@@ -56,19 +57,21 @@ class WebDriverHelpers {
         private fun makeChromeDriver(): ChromeDriver {
             val options = ChromeOptions()
             options.setBinary(props.getProperty("browsers.chrome.binary"))
-            return addCookiesPromptCookie(ChromeDriver(options))
+            return doCommonPreparation(ChromeDriver(options))
         }
 
         private fun makeFirefoxDriver(): FirefoxDriver {
             val options = FirefoxOptions()
             options.binary = FirefoxBinary(File(props.getProperty("browsers.firefox.binary")))
-            options.setLogLevel(FirefoxDriverLogLevel.ERROR)
-            return addCookiesPromptCookie(FirefoxDriver(options))
+            return doCommonPreparation(FirefoxDriver(options))
         }
 
-        private fun <T : WebDriver> addCookiesPromptCookie(driver: T): T {
+        private fun <T : WebDriver> doCommonPreparation(driver: T): T {
             driver.get("https://booking.com")
+            // Adding cookie so website will know I clicked 'Accept cookies' button
             driver.manage().addCookie(Cookie("OptanonAlertBoxClosed", Instant.now().toString()))
+            // Common implicit wait for any action so we don't need to do excessive element presence checks
+            driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS)
             return driver
         }
     }
