@@ -127,14 +127,19 @@ class SearchResultsPage(private val driver: WebDriver) {
             }
 
             fun toggleSelection() {
-                try {
-                    WebDriverWait(driver, 20)
-                        .pollingEvery(Duration.ofSeconds(1))
-                        .until(ExpectedConditions.elementToBeClickable(el))
-                        .click()
-                } catch (e: TimeoutException) {
-                    LoggerFactory.getLogger(SearchResultsPage::class.java).warn(e) { "Could not click element $el" }
-                }
+                // https://stackoverflow.com/a/62137766/8881863
+                (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true)", el)
+                WebDriverWait(driver, 10)
+                    .pollingEvery(Duration.ofMillis(500))
+                    .until(ExpectedConditions.elementToBeClickable(el))
+                    .click()
+
+                // todo remove of not needed
+//                try {
+//
+//                } catch (e: TimeoutException) {
+//                    LoggerFactory.getLogger(SearchResultsPage::class.java).warn(e) { "Could not click element $el" }
+//                }
                 waitForFiltersToUpdate()
             }
         }
