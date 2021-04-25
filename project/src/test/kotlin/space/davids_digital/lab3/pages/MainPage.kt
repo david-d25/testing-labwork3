@@ -95,4 +95,25 @@ class MainPage(private val driver: WebDriver) {
     private fun decrementAdultsNumber() = driver.findElement(ADULTS_SUBTRACT_BUTTON).click()
     private fun decrementChildrenNumber() = driver.findElement(CHILDREN_SUBTRACT_BUTTON).click()
     private fun decrementRoomsNumber() = driver.findElement(ROOMS_SUBTRACT_BUTTON).click()
+
+    private val CHOOSE_CURRENCY_BUTTON = By.xpath("//div[@class='bui-group__item']//button[@data-modal-aria-label='Select your currency']")
+    private val CURRENCIES = By.xpath("//a[contains(@class, 'bui-list-item')]//div[@class='bui-traveller-header__currency']")
+    private val CHOOSE_CURRENCY_TEXT = By.xpath("//div[@class='bui-group__item']//span[@class='bui-button__text']/span[@aria-hidden='true']")
+
+    fun chooseCurrency(currency: String) {
+        driver.findElement(CHOOSE_CURRENCY_BUTTON).click()
+        driver.findElements(CURRENCIES).find { it.text == currency }?.click()
+    }
+
+    fun getCurrentCurrency(): String = driver.findElement(CHOOSE_CURRENCY_TEXT).text
+
+    private val CHOOSE_LANGUAGE_BUTTON = By.xpath("//div[@class='bui-group__item']//button[@data-modal-id='language-selection']")
+
+    fun chooseLanguage(language: String) {
+        driver.findElement(CHOOSE_LANGUAGE_BUTTON).click()
+        driver.findElements(By.xpath("//a[contains(@class, 'bui-list-item')]//div[@class='bui-inline-container__main']")).find{ it.text == language }?.click()
+    }
+
+    fun getCurrentLanguage(): String = driver.findElement(By.xpath("/html")).getAttribute("lang")
+
 }
