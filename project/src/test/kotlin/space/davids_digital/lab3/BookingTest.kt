@@ -54,14 +54,12 @@ class BookingTest {
 
         // As filter elements re-build on each filter update, getFilterBoxes must be invoked instead of storing its result
         // As filters number may change on filter update, it's required to use 'while' loop
-        var currentFilterIndex = 0
-        while (currentFilterIndex < resultsPage.getFilterBoxes().size) {
+        while (resultsPage.getUnusedFilterBoxes().isNotEmpty()) {
             // Always choose the most popular option so there will be more results
-            resultsPage.getFilterBoxes()[currentFilterIndex].getOptions()
+            resultsPage.expandAllFilters()
+            resultsPage.getUnusedFilterBoxes()[0].getOptions()
                 .maxByOrNull { it.getFilterCount() }
                 .let { it?.toggleSelection() }
-
-            currentFilterIndex++
         }
 
         with(resultsPage) {

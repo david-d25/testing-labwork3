@@ -14,19 +14,18 @@ private const val EXPECTED_PAGE_URL_PREFIX = "https://www.booking.com/searchresu
 
 private val SEARCH_RESULTS = By.xpath("//*[@data-hotelid]")
 private val FILTER_BOX_CONTAINER = By.xpath("//*[@id='filterbox_options']")
-private val FILTER_BOXES = By.xpath("//*[@id='filterbox_options']/*[@data-block-id='filter_options']/*[contains(concat(' ', normalize-space(@class), ' '), ' filterbox ') and not(contains(@class, 'g-hidden')) and not(contains(@class, 'filterbox_hide-in-list')) and not(contains(@style, 'display: none;'))]")
-private val FILTER_BOX_OPTIONS = By.xpath("./*[@class='filteroptions']/a")
-private val FILTER_BOX_TITLE = By.xpath(".//h3[@class='filtercategory-title']")
+private val FILTER_BOXES_UNUSED = By.xpath("//*[@id='filterbox_options']/*[@data-block-id='filter_options']/*[contains(concat(' ', normalize-space(@class), ' '), ' filterbox ') and not(contains(@class, 'g-hidden')) and not(contains(@class, 'filterbox_hide-in-list')) and not(contains(@style, 'display: none;'))][.//div[contains(@class, 'filteroptions') and not(contains(@class, 'filter_selected')) and count(.//a[contains(@class, 'active')])=0]]")
+private val FILTER_BOX_OPTIONS = By.xpath("./*[contains(@class, 'filteroptions')]/a[not(contains(@class, 'collapsed_partly'))]")
 private val FILTER_BOX_OPTION_FILTER_COUNT = By.xpath(".//*[@class='filter_count']")
+private val FILTER_BOX_SHOW_MORE_BUTTON = By.xpath("//*[@data-block-id='filter_options']/*[contains(concat(' ', normalize-space(@class), ' '), ' filterbox_limited ') and not(contains(@class, 'g-hidden')) and not(contains(@class, 'filterbox_hide-in-list')) and not(contains(@style, 'display: none;'))]//button[contains(@class, 'collapsed_partly_more')]")
 private val FILTER_UPDATE_POPUP_CONTAINER = By.xpath("//*[@class='sr-usp-overlay__container']")
 private val ASIDE_FORM = By.xpath("//form[@id='frm']")
 private val ASIDE_FORM_ADULTS_SELECT = By.xpath("//form[@id='frm']//select[@name='group_adults']")
 private val ASIDE_FORM_CHILDREN_SELECT = By.xpath("//form[@id='frm']//select[@name='group_children']")
 private val ASIDE_FORM_ROOMS_SELECT = By.xpath("//form[@id='frm']//select[@name='no_rooms']")
-private val ASIDE_FORM_TRAVELLING_FOR_WORK_CHECKBOX = By.xpath("//form[@id='frm']//*[@name='sb_travel_purpose']")
+private val ASIDE_FORM_TRAVELLING_FOR_WORK_CHECKBOX = By.xpath("//form[@id='frm']//label[.//*[@name='sb_travel_purpose']]")
 private val ASIDE_FORM_SEARCH = By.xpath("//form[@id='frm']//button[@type='submit']")
 private val ASIDE_FORM_DESTINATION = By.xpath("//form[@id='frm']//input[@name='ss']")
-private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_INVISIBLE = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list') and not(contains(@class, '-visible'))]")
 private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_VISIBLE = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list') and contains(@class, '-visible')]")
 private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_ITEM = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list')]/li")
 
@@ -91,9 +90,18 @@ class SearchResultsPage(private val driver: WebDriver) {
             .until(ExpectedConditions.elementToBeClickable(el))
             .click()
     }
-    fun clickAsideFilterSearchButton() = driver.findElement(ASIDE_FORM_SEARCH).click()
 
-    fun getFilterBoxes() = driver.findElements(FILTER_BOXES).map { FilterBox(it) }.sortedBy { it.getTitle() }
+    fun clickAsideFilterSearchButton() = driver.findElement(ASIDE_FORM_SEARCH).click()
+    fun expandAllFilters() {
+        while (driver.hasElement(FILTER_BOX_SHOW_MORE_BUTTON)) {
+            WebDriverWait(driver, 10)
+                .pollingEvery(Duration.ofMillis(250))
+                .until(ExpectedConditions.elementToBeClickable(FILTER_BOX_SHOW_MORE_BUTTON))
+                .click()
+        }
+    }
+
+    fun getUnusedFilterBoxes() = driver.findElements(FILTER_BOXES_UNUSED).map { FilterBox(it) }
     fun getSearchResults() = driver.findElements(SEARCH_RESULTS).map { Result(it) }
 
     inner class Result(private val el: WebElement) {
@@ -110,17 +118,17 @@ class SearchResultsPage(private val driver: WebDriver) {
             }
         }
 
-        fun getTitle() = if (el.findElements(FILTER_BOX_TITLE).size > 0) el.findElement(FILTER_BOX_TITLE).text ?: "" else ""
-
         inner class Option(private val el: WebElement) {
             fun getFilterCount(): Int {
-                val text = el.findElement(FILTER_BOX_OPTION_FILTER_COUNT).text
-                return if (text.isNotBlank()) text.toInt() else 0
+                return if (el.findElements(FILTER_BOX_OPTION_FILTER_COUNT).size > 0) {
+                    val text = el.findElement(FILTER_BOX_OPTION_FILTER_COUNT).text
+                    if (text.isNotBlank()) text.toInt() else 0
+                } else 0
             }
 
             fun toggleSelection() {
                 try {
-                    WebDriverWait(driver, 30)
+                    WebDriverWait(driver, 20)
                         .pollingEvery(Duration.ofSeconds(1))
                         .until(ExpectedConditions.elementToBeClickable(el))
                         .click()
