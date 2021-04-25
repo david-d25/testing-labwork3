@@ -22,7 +22,11 @@ private val CHILDREN_SUBTRACT_BUTTON = By.xpath("//*[@id='xp__guests__inputs-con
 private val ROOMS_NUMBER_LABEL = By.xpath("//*[@id='xp__guests__inputs-container']//*[contains(@class, 'sb-group__field-rooms')]//*[@data-bui-ref='input-stepper-value']")
 private val ROOMS_ADD_BUTTON = By.xpath("//*[@id='xp__guests__inputs-container']//*[contains(@class, 'sb-group__field-rooms')]//*[@data-bui-ref='input-stepper-add-button']")
 private val ROOMS_SUBTRACT_BUTTON = By.xpath("//*[@id='xp__guests__inputs-container']//*[contains(@class, 'sb-group__field-rooms')]//*[@data-bui-ref='input-stepper-subtract-button']")
+private val LANGUAGE_BUTTON = By.xpath("//button[@data-modal-id='language-selection']")
+private val LANGUAGE_OPTIONS = By.xpath("//a[contains(@class, 'bui-list-item')]")
+private val CURRENCY_BUTTON = By.xpath("//header//button[@data-modal-header-async-type='currencyDesktop']")
 
+private val CURRENCIES_PATTERN = MessageFormat("//div[@role=''dialog'']//a[.//div[@class=''bui-traveller-header__currency'']/child::text() = ''{0}']")
 private val CHILD_AGE_SELECT_PATTERN = MessageFormat("//*[@id=''xp__guests__inputs-container'']//*[contains(@class, ''sb-group__children__field'')]//select[@name=''age'' and @data-group-child-age=''{0}'']")
 
 class MainPage(private val driver: WebDriver) {
@@ -96,24 +100,19 @@ class MainPage(private val driver: WebDriver) {
     private fun decrementChildrenNumber() = driver.findElement(CHILDREN_SUBTRACT_BUTTON).click()
     private fun decrementRoomsNumber() = driver.findElement(ROOMS_SUBTRACT_BUTTON).click()
 
-    private val CHOOSE_CURRENCY_BUTTON = By.xpath("//div[@class='bui-group__item']//button[@data-modal-aria-label='Select your currency']")
-    private val CURRENCIES = By.xpath("//a[contains(@class, 'bui-list-item')]//div[@class='bui-traveller-header__currency']")
-    private val CHOOSE_CURRENCY_TEXT = By.xpath("//div[@class='bui-group__item']//span[@class='bui-button__text']/span[@aria-hidden='true']")
-
-    fun chooseCurrency(currency: String) {
-        driver.findElement(CHOOSE_CURRENCY_BUTTON).click()
-        driver.findElements(CURRENCIES).find { it.text == currency }?.click()
+    fun changeCurrency(currencyCode: String) {
+        driver.findElement(CURRENCY_BUTTON).click()
+        driver.findElements(By.xpath(CURRENCIES_PATTERN.format(arrayOf(currencyCode))))
+            .find { it.text == currencyCode }?.click()
     }
 
-    fun getCurrentCurrency(): String = driver.findElement(CHOOSE_CURRENCY_TEXT).text
+    fun getCurrentCurrency() = driver.findElement(CURRENCY_BUTTON).text!!
 
-    private val CHOOSE_LANGUAGE_BUTTON = By.xpath("//div[@class='bui-group__item']//button[@data-modal-id='language-selection']")
 
-    fun chooseLanguage(language: String) {
-        driver.findElement(CHOOSE_LANGUAGE_BUTTON).click()
-        driver.findElements(By.xpath("//a[contains(@class, 'bui-list-item')]//div[@class='bui-inline-container__main']")).find{ it.text == language }?.click()
+    fun changeLanguage(langCode: String) {
+        driver.findElement(LANGUAGE_BUTTON).click()
+        driver.findElements(LANGUAGE_OPTIONS).find { it.getAttribute("data-lang") == langCode }!!.click()
     }
 
-    fun getCurrentLanguage(): String = driver.findElement(By.xpath("/html")).getAttribute("lang")
-
+    fun getPageLangCode() = driver.findElement(By.tagName("html")).getAttribute("lang")!!
 }
