@@ -8,8 +8,6 @@ import space.davids_digital.lab3.hasElement
 import java.text.MessageFormat
 import java.time.Duration
 
-private const val EXPECTED_PAGE_URL_PREFIX = "https://www.booking.com/searchresults"
-
 private val SEARCH_RESULTS = By.xpath("//*[@data-hotelid]")
 private val SEARCH_RESULT_TITLE_LINK = By.xpath(".//h3/a")
 private val FILTER_BOX_CONTAINER = By.xpath("//*[@id='filterbox_options']")
@@ -31,11 +29,7 @@ private val MENUBAR_ITEM = By.xpath("//ul[@role='menubar']/li/a")
 
 private val ASIDE_FORM_CHILD_AGE_PATTERN = MessageFormat("//form[@id=''frm'']//select[@name=''age'' and @data-group-child-age=''{0}'']")
 
-class SearchResultsPage(private val driver: WebDriver) {
-    init {
-        if (!   driver.currentUrl.startsWith(EXPECTED_PAGE_URL_PREFIX))
-            throw IllegalStateException("Expected url starting with '$EXPECTED_PAGE_URL_PREFIX', but it's '${driver.currentUrl}'")
-    }
+class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex("https://www\\.booking\\.com/searchresults.*")) {
 
     fun isAsideFormPresent() = driver.hasElement(ASIDE_FORM)
     fun isFilterBoxContainerPresent() = driver.hasElement(FILTER_BOX_CONTAINER)
@@ -58,7 +52,7 @@ class SearchResultsPage(private val driver: WebDriver) {
     }
 
     fun getAsideFilterDestination()
-            = driver.findElement(ASIDE_FORM_DESTINATION).getAttribute("value")
+            = driver.findElement(ASIDE_FORM_DESTINATION).getAttribute("value")!!
     fun getAsideFilterAdultsNumber()
             = Select(driver.findElement(ASIDE_FORM_ADULTS_SELECT)).firstSelectedOption.getAttribute("value").toInt()
     fun getAsideFilterChildrenNumber()

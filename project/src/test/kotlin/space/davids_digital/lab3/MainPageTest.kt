@@ -2,8 +2,10 @@ package space.davids_digital.lab3
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.openqa.selenium.WebDriver
+import space.davids_digital.lab3.pages.CommonSignInRegisterPage
 import space.davids_digital.lab3.pages.MainPage
 
 private const val MIN_ADULTS_NUM = 1
@@ -44,6 +46,40 @@ class MainPageTest {
         this.driver = driver
 
         // todo test adults/children/rooms buttons and label
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to register`(driver: WebDriver) {
+        this.driver = driver
+
+        MainPage(driver).clickHeaderRegisterButton()
+        assertDoesNotThrow { CommonSignInRegisterPage(driver) } // Gone to the right page
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to sign in`(driver: WebDriver) {
+        this.driver = driver
+
+        MainPage(driver).clickHeaderSignInButton()
+        assertDoesNotThrow { CommonSignInRegisterPage(driver) } // Gone to the right page
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to customer service`(driver: WebDriver) {
+        this.driver = driver
+
+        // todo
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to property listing`(driver: WebDriver) {
+        this.driver = driver
+
+        // todo
     }
 
     @AfterEach
