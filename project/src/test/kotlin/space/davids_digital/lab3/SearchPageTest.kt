@@ -13,7 +13,7 @@ import space.davids_digital.lab3.pages.MainPage
 import space.davids_digital.lab3.pages.SearchResultsPage
 
 @TestInstance(PER_METHOD)
-class BookingTest {
+class SearchPageTest {
 
     private lateinit var driver: WebDriver
 
@@ -79,7 +79,7 @@ class BookingTest {
 
         // Checking that aside form changes applied correctly
         assertTrue(resultsPage.isAsideFormPresent())
-        assertEquals("Podolsk", resultsPage.getAsideFilterDestination())
+        assertEquals("Buzuluk", resultsPage.getAsideFilterDestination())
         assertEquals(2, resultsPage.getAsideFilterAdultsNumber())
         assertEquals(4, resultsPage.getAsideFilterChildrenNumber())
         assertEquals(1, resultsPage.getAsideFilterRoomsNumber())

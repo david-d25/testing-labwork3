@@ -5,8 +5,6 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.Select
 import java.text.MessageFormat
 
-private const val EXPECTED_PAGE_URL_PREFIX = "https://www.booking.com/index"
-
 private val SEARCH_INPUT = By.xpath("//input[@name='ss']")
 private val SEARCH_BUTTON = By.xpath("//form[@id='frm']//button[@type='submit']")
 private val CALENDAR_DAY1 = By.xpath("//div[@class='bui-calendar']//div[@class='bui-calendar__wrapper'][2]//td[@class='bui-calendar__date'][./span/span/child::text() = 1]")
@@ -25,16 +23,13 @@ private val ROOMS_SUBTRACT_BUTTON = By.xpath("//*[@id='xp__guests__inputs-contai
 private val LANGUAGE_BUTTON = By.xpath("//button[@data-modal-id='language-selection']")
 private val LANGUAGE_OPTIONS = By.xpath("//a[contains(@class, 'bui-list-item')]")
 private val CURRENCY_BUTTON = By.xpath("//header//button[@data-modal-header-async-type='currencyDesktop']")
+private val CURRENCY_BUTTON_CURRENCY_CODE = By.xpath("//header//button[@data-modal-header-async-type='currencyDesktop']/span[@class='bui-button__text']/span[1]")
+private val HEADER_REGISTER_SIGN_IN_BUTTONS = By.xpath("//header//a[contains(@class, 'js-header-login-link')]")
 
-private val CURRENCIES_PATTERN = MessageFormat("//div[@role=''dialog'']//a[.//div[@class=''bui-traveller-header__currency'']/child::text() = ''{0}']")
+private val CURRENCIES_PATTERN = MessageFormat("//div[@role=''dialog'']//a[normalize-space(.//div[@class=''bui-traveller-header__currency'']/text()) = ''{0}'']")
 private val CHILD_AGE_SELECT_PATTERN = MessageFormat("//*[@id=''xp__guests__inputs-container'']//*[contains(@class, ''sb-group__children__field'')]//select[@name=''age'' and @data-group-child-age=''{0}'']")
 
-class MainPage(private val driver: WebDriver) {
-    init {
-        if (!driver.currentUrl.startsWith(EXPECTED_PAGE_URL_PREFIX))
-            throw IllegalStateException("Expected url '$EXPECTED_PAGE_URL_PREFIX', but it's '${driver.currentUrl}'")
-    }
-
+class MainPage(private val driver: WebDriver): CommonPage(driver, Regex("https://www\\.booking\\.com.*")) {
     fun typeIntoSearchBox(text: String) {
         driver.findElement(SEARCH_INPUT).sendKeys(text)
     }
@@ -102,12 +97,10 @@ class MainPage(private val driver: WebDriver) {
 
     fun changeCurrency(currencyCode: String) {
         driver.findElement(CURRENCY_BUTTON).click()
-        driver.findElements(By.xpath(CURRENCIES_PATTERN.format(arrayOf(currencyCode))))
-            .find { it.text == currencyCode }?.click()
+        driver.findElement(By.xpath(CURRENCIES_PATTERN.format(arrayOf(currencyCode)))).click()
     }
 
-    fun getCurrentCurrency() = driver.findElement(CURRENCY_BUTTON).text!!
-
+    fun getCurrentCurrency() = driver.findElement(CURRENCY_BUTTON_CURRENCY_CODE).text.trim() // May have newlines
 
     fun changeLanguage(langCode: String) {
         driver.findElement(LANGUAGE_BUTTON).click()
@@ -115,4 +108,7 @@ class MainPage(private val driver: WebDriver) {
     }
 
     fun getPageLangCode() = driver.findElement(By.tagName("html")).getAttribute("lang")!!
+
+    fun clickHeaderRegisterButton() = driver.findElements(HEADER_REGISTER_SIGN_IN_BUTTONS)[0].click()
+    fun clickHeaderSignInButton() = driver.findElements(HEADER_REGISTER_SIGN_IN_BUTTONS)[1].click()
 }
