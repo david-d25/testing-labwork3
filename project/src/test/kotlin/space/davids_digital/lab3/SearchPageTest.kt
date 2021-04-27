@@ -1,8 +1,7 @@
 package space.davids_digital.lab3
 
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -19,7 +18,7 @@ class SearchPageTest {
 
     @ParameterizedTest
     @ProvideWebDrivers
-    fun `search filters`(driver: WebDriver) {
+    fun `search with filters`(driver: WebDriver) {
         this.driver = driver
 
         driver.get("https://booking.com")
@@ -65,7 +64,7 @@ class SearchPageTest {
         }
 
         with(resultsPage) {
-            setAsideFilterDestination("Podolsk")
+            setAsideFilterDestination("Ivanovo")
             selectAsideFilterAdultsNumber(2)
             selectAsideFilterChildrenNumber(4)
             selectAsideFilterRoomsNumber(1)
@@ -79,7 +78,7 @@ class SearchPageTest {
 
         // Checking that aside form changes applied correctly
         assertTrue(resultsPage.isAsideFormPresent())
-        assertEquals("Buzuluk", resultsPage.getAsideFilterDestination())
+        assertEquals("Ivanovo", resultsPage.getAsideFilterDestination())
         assertEquals(2, resultsPage.getAsideFilterAdultsNumber())
         assertEquals(4, resultsPage.getAsideFilterChildrenNumber())
         assertEquals(1, resultsPage.getAsideFilterRoomsNumber())
@@ -99,10 +98,48 @@ class SearchPageTest {
 
     @ParameterizedTest
     @ProvideWebDrivers
+    fun `going to result page without setting any filters`(driver: WebDriver) {
+        this.driver = driver
+
+        driver.get("https://booking.com")
+
+        with (MainPage(driver)) {
+            typeIntoSearchBox("Buzuluk")
+            pickSearchDates()
+            clickSearchButton()
+        }
+        with (SearchResultsPage(driver)) {
+            assertTrue(getSearchResults().isNotEmpty()) // There should be at least one hotel in Buzuluk city
+            getSearchResults()[0].go()
+        }
+        assertEquals(2, driver.windowHandles.size) // Opened in new tab
+        driver.switchTo().window(driver.windowHandles.toList()[1])
+        assertDoesNotThrow { HotelPage(driver) } // Gone to the right url
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
     fun `show on map buttons`(driver: WebDriver) {
         this.driver = driver
 
-        // todo
+        driver.get("https://booking.com")
+
+        with (MainPage(driver)) {
+            typeIntoSearchBox("Podolsk")
+            pickSearchDates()
+            clickSearchButton()
+        }
+        with (SearchResultsPage(driver)) {
+            assertEquals(2, getShowOnMapElementsCount())
+            clickShowOnMap(0)
+            assertTrue(isMapShowed())
+            closeMap()
+            assertFalse(isMapShowed())
+            clickShowOnMap(1)
+            assertTrue(isMapShowed())
+            closeMap()
+            assertFalse(isMapShowed())
+        }
     }
 
     @AfterEach
