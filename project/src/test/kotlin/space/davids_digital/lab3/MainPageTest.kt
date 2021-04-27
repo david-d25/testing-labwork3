@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.openqa.selenium.WebDriver
-import space.davids_digital.lab3.pages.CommonSignInRegisterPage
-import space.davids_digital.lab3.pages.HelpCenterPage
-import space.davids_digital.lab3.pages.JoinLandingPage
-import space.davids_digital.lab3.pages.MainPage
+import space.davids_digital.lab3.pages.*
 
 private const val MIN_ADULTS_NUM = 1
 private const val MAX_ADULTS_NUM = 30
@@ -97,6 +94,33 @@ class MainPageTest {
 
         MainPage(driver).clickCustomerServiceButton()
         assertDoesNotThrow { HelpCenterPage(driver) } // Gone to the right page
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to car rentals`(driver: WebDriver) {
+        this.driver = driver
+
+        MainPage(driver).clickCarRentalsButton()
+        assertDoesNotThrow { CarRentalsMainPage(driver) } // Gone to the right page
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to attractions`(driver: WebDriver) {
+        this.driver = driver
+
+        MainPage(driver).clickAttractionsButton()
+        assertDoesNotThrow { AttractionsMainPage(driver) } // Gone to the right page
+    }
+
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `going to taxis`(driver: WebDriver) {
+        this.driver = driver
+
+        MainPage(driver).clickTaxisButton()
+        assertDoesNotThrow { TaxisMainPage(driver) } // Gone to the right page
     }
 
     @ParameterizedTest

@@ -29,10 +29,13 @@ class CommonSignInRegisterPage(private val driver: WebDriver): CommonPage(driver
     }
     fun clickCreateAccount() = driver.findElement(CREATE_ACCOUNT_BUTTON).click()
     fun enterLoginPassword(password: String) {
-        WebDriverWait(driver, 2)
-            .pollingEvery(Duration.ofMillis(100))
+        WebDriverWait(driver, 5)
+            .pollingEvery(Duration.ofMillis(1000))
             .ignoring(ElementNotInteractableException::class.java)
-            .until { driver.findElement(SIGN_IN_PASSWORD_INPUT).sendKeys(password) }
+            .until {
+                driver.findElement(SIGN_IN_PASSWORD_INPUT).sendKeys(password);
+                return@until driver.findElement(SIGN_IN_PASSWORD_INPUT).getAttribute("value").equals(password)
+            }
     }
     fun clickSignIn() = driver.findElement(SIGN_IN_BUTTON).click()
 }

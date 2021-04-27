@@ -115,7 +115,6 @@ class SearchPageTest {
         assertEquals(2, driver.windowHandles.size) // Opened in new tab
         driver.switchTo().window(driver.windowHandles.toList()[1])
         assertDoesNotThrow { HotelPage(driver) } // Gone to the right url
-        // todo test title
     }
 
     @ParameterizedTest
