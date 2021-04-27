@@ -130,6 +130,20 @@ class HotelPageTest {
         }
     }
 
+    /**
+     * ♫ There's a black hole deep inside of me ♫
+     * ♫ Reminding me                           ♫
+     * ♫ That I lost my backbone                ♫
+     * ♫ Somewhere in Stockholm                 ♫
+     */
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `go to Stockholm, lose your backbone and check questions`(driver: WebDriver) {
+        this.driver = driver
+
+
+    }
+
     @AfterEach
     fun tearDown() {
         driver.quit()
