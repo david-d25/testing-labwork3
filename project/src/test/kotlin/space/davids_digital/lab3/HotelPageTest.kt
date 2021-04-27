@@ -141,7 +141,25 @@ class HotelPageTest {
     fun `go to Stockholm, lose your backbone and check questions`(driver: WebDriver) {
         this.driver = driver
 
-
+        driver.get("https://booking.com")
+        with (MainPage(driver)) {
+            typeIntoSearchBox("Stockholm")
+            pickSearchDates()
+            clickSearchButton()
+        }
+        with (SearchResultsPage(driver)) {
+            assertTrue(getSearchResults().isNotEmpty())
+            getSearchResults().first().go()
+        }
+        assertEquals(2, driver.windowHandles.size)
+        driver.switchTo().window(driver.windowHandles.toList()[1])
+        with (HotelPage(driver)) {
+            assertFalse(isQuestionsPopupOpen())
+            clickMoreQuestionsButton()
+            assertTrue(isQuestionsPopupOpen())
+            clickCloseQuestionsPopup()
+            assertFalse(isQuestionsPopupOpen())
+        }
     }
 
     @AfterEach
