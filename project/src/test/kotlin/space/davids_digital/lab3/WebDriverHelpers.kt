@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
 fun SearchContext.hasElement(by: By) = this.findElements(by).size > 0
+fun SearchContext.countElements(by: By) = this.findElements(by).size
 
 const val DRIVERS_PROVIDER_NAME = "space.davids_digital.lab3.WebDriverHelpers#provideWebDrivers"
 
