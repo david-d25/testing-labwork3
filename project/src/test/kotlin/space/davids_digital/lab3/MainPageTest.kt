@@ -6,14 +6,16 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.openqa.selenium.WebDriver
 import space.davids_digital.lab3.pages.CommonSignInRegisterPage
+import space.davids_digital.lab3.pages.HelpCenterPage
+import space.davids_digital.lab3.pages.JoinLandingPage
 import space.davids_digital.lab3.pages.MainPage
 
 private const val MIN_ADULTS_NUM = 1
 private const val MAX_ADULTS_NUM = 30
 private const val MIN_CHILDREN_NUM = 0
 private const val MAX_CHILDREN_NUM = 10
-private const val MIN_ROOMS_NUM = 0
-private const val MAX_ROOMS_NUM = 10
+private const val MIN_ROOMS_NUM = 1
+private const val MAX_ROOMS_NUM = 30
 
 class MainPageTest {
     private lateinit var driver: WebDriver
@@ -45,7 +47,29 @@ class MainPageTest {
     fun `guests filter setting`(driver: WebDriver) {
         this.driver = driver
 
-        // todo test adults/children/rooms buttons and label
+        with(MainPage(driver)) {
+            setChildrenNumber(4)
+            assertEquals(4, getChildrenNumber())
+            setAdultsNumber(5)
+            assertEquals(5, getAdultsNumber())
+            setRoomsNumber(6)
+            assertEquals(6, getRoomsNumber())
+
+            setChildrenNumber(MIN_CHILDREN_NUM - 1)
+            assertEquals(MIN_CHILDREN_NUM, getChildrenNumber())
+            setChildrenNumber(MAX_CHILDREN_NUM + 1)
+            assertEquals(MAX_CHILDREN_NUM, getChildrenNumber())
+
+            setAdultsNumber(MIN_ADULTS_NUM - 1)
+            assertEquals(MIN_ADULTS_NUM, getAdultsNumber())
+            setAdultsNumber(MAX_ADULTS_NUM + 1)
+            assertEquals(MAX_ADULTS_NUM, getAdultsNumber())
+
+            setRoomsNumber(MIN_ROOMS_NUM - 1)
+            assertEquals(MIN_ROOMS_NUM, getRoomsNumber())
+            setRoomsNumber(MAX_ROOMS_NUM + 1)
+            assertEquals(MAX_ROOMS_NUM, getRoomsNumber())
+        }
     }
 
     @ParameterizedTest
@@ -71,7 +95,8 @@ class MainPageTest {
     fun `going to customer service`(driver: WebDriver) {
         this.driver = driver
 
-        // todo
+        MainPage(driver).clickCustomerServiceButton()
+        assertDoesNotThrow { HelpCenterPage(driver) } // Gone to the right page
     }
 
     @ParameterizedTest
@@ -79,7 +104,10 @@ class MainPageTest {
     fun `going to property listing`(driver: WebDriver) {
         this.driver = driver
 
-        // todo
+        MainPage(driver).clickListPropertyButton()
+        assertEquals(2, driver.windowHandles.size) // Opened in new tab
+        driver.switchTo().window(driver.windowHandles.toList()[1])
+        assertDoesNotThrow { JoinLandingPage(driver) }
     }
 
     @AfterEach

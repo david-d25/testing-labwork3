@@ -26,12 +26,12 @@ class SearchPageTest {
         with(MainPage(driver)) {
             typeIntoSearchBox("Massachusetts")
             pickSearchDates()
-            setAdultsNum(5)
-            setChildrenNum(3)
+            setAdultsNumber(5)
+            setChildrenNumber(3)
             setChildAge(0, 10)
             setChildAge(1, 8)
             setChildAge(2, 12)
-            setRoomsNum(2)
+            setRoomsNumber(2)
             clickSearchButton()
         }
 
