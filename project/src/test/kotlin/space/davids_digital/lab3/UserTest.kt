@@ -20,6 +20,9 @@ class UserTest {
         with (CommonSignInRegisterPage(driver)) {
             enterEmail("rhjyhwmwjmszxpxprl@niwghx.com")
             clickContinue()
+            WebDriverWait(driver, 5)
+                .pollingEvery(Duration.ofSeconds(1))
+                .until { driver.currentUrl.startsWith("https://account.booking.com/sign-in/password") }
             enterLoginPassword("BHHHHfdjg9999")
             clickSignIn()
             // In case of anti-robot check
@@ -30,8 +33,7 @@ class UserTest {
 
         with(mainPage) {
             typeIntoSearchBox("Ivanovo")
-            setAdultsNumber(1)
-            pickSearchDates()
+//            pickSearchDates()
             clickSearchButton()
         }
 
@@ -41,8 +43,6 @@ class UserTest {
 
         val favouritesPage = FavouritesPage(driver)
         Assertions.assertTrue(favouritesPage.isSavedElementPresented(expected))
-
-
     }
 
     @AfterEach

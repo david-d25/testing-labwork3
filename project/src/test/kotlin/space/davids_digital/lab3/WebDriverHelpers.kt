@@ -74,6 +74,7 @@ class WebDriverHelpers {
             driver.manage().addCookie(Cookie("OptanonAlertBoxClosed", Instant.now().toString()))
             // Common implicit wait for any action so we don't need to do excessive element presence checks
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS)
+            driver.get("https://booking.com")
             return driver
         }
     }
