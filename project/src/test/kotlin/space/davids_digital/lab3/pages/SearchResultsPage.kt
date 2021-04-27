@@ -25,7 +25,10 @@ private val ASIDE_FORM_SEARCH = By.xpath("//form[@id='frm']//button[@type='submi
 private val ASIDE_FORM_DESTINATION = By.xpath("//form[@id='frm']//input[@name='ss']")
 private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_VISIBLE = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list') and contains(@class, '-visible')]")
 private val ASIDE_FORM_DESTINATION_AUTOCOMPLETE_ITEM = By.xpath("//form[@id='frm']//ul[@role='listbox' and contains(@class, 'sb-autocomplete__list')]/li")
-private val MENUBAR_ITEM = By.xpath("//ul[@role='menubar']/li/a")
+private val MENUBAR_ITEM = By.xpath("//ul[@role='menubar']/li//a")
+private val SHOW_ON_MAP_BUTTONS = By.xpath("//button[contains(@class, 'show_map') and contains(@class, 'bui-button')]")
+private val MAP_WRAPPER = By.xpath("//div[@class='map_full_overlay__wrapper' and contains(@style, 'display: block;')]")
+private val MAP_CLOSE_BUTTON = By.xpath("//div[@class='map_full_overlay__wrapper']/div[@class='map_full_overlay__close']")
 
 private val ASIDE_FORM_CHILD_AGE_PATTERN = MessageFormat("//form[@id=''frm'']//select[@name=''age'' and @data-group-child-age=''{0}'']")
 
@@ -99,9 +102,19 @@ class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex
     fun getSearchResults() = driver.findElements(SEARCH_RESULTS).map { Result(it) }
 
     fun clickMenubarItem(index: Int) {
-        driver.findElements(MENUBAR_ITEM)[index].click()
+        // https://stackoverflow.com/a/62137766/8881863
+//        (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true)", driver.findElements(MENUBAR_ITEM)[index])
+        WebDriverWait(driver, 10)
+            .pollingEvery(Duration.ofSeconds(1))
+            .until(ExpectedConditions.elementToBeClickable(driver.findElements(MENUBAR_ITEM)[index]))
+            .click()
         waitForFiltersToUpdate()
     }
+
+    fun clickShowOnMap(index: Int) = driver.findElements(SHOW_ON_MAP_BUTTONS)[index].click()
+    fun getShowOnMapElementsCount() = driver.findElements(SHOW_ON_MAP_BUTTONS).size
+    fun isMapShowed() = driver.hasElement(MAP_WRAPPER)
+    fun closeMap() = driver.findElement(MAP_CLOSE_BUTTON).click()
 
     inner class Result(private val el: WebElement) {
         fun go() = el.findElement(SEARCH_RESULT_TITLE_LINK).click()

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.fail
 import org.junit.jupiter.params.provider.MethodSource
 import org.openqa.selenium.By
 import org.openqa.selenium.Cookie
+import org.openqa.selenium.SearchContext
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -17,7 +18,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
-fun WebDriver.hasElement(by: By) = this.findElements(by).size > 0
+fun SearchContext.hasElement(by: By) = this.findElements(by).size > 0
 
 const val DRIVERS_PROVIDER_NAME = "space.davids_digital.lab3.WebDriverHelpers#provideWebDrivers"
 
@@ -71,7 +72,7 @@ class WebDriverHelpers {
             // Adding cookie so website will know I clicked 'Accept cookies' button
             driver.manage().addCookie(Cookie("OptanonAlertBoxClosed", Instant.now().toString()))
             // Common implicit wait for any action so we don't need to do excessive element presence checks
-            driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS)
+            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS)
             return driver
         }
     }
