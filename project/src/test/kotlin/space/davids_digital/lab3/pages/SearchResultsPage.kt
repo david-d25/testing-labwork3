@@ -102,8 +102,6 @@ class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex
     fun getSearchResults() = driver.findElements(SEARCH_RESULTS).map { Result(it) }
 
     fun clickMenubarItem(index: Int) {
-        // https://stackoverflow.com/a/62137766/8881863
-//        (driver as JavascriptExecutor).executeScript("arguments[0].scrollIntoView(true)", driver.findElements(MENUBAR_ITEM)[index])
         WebDriverWait(driver, 10)
             .pollingEvery(Duration.ofSeconds(1))
             .until(ExpectedConditions.elementToBeClickable(driver.findElements(MENUBAR_ITEM)[index]))
