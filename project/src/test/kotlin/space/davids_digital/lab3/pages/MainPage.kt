@@ -29,6 +29,9 @@ private val HEADER_REGISTER_SIGN_IN_BUTTONS = By.xpath("//header//a[contains(@cl
 private val HEADER_CUSTOMER_SERVICE_BUTTON = By.xpath("//header//a[contains(@class, 'bui-button')][.//*[contains(@class, '-streamline-question_mark_circle')]]")
 private val HEADER_LIST_PROPERTY_BUTTON = By.xpath("//div[@class='bui-group__item' and .//*[contains(@class, '-streamline-property_add')]]/a")
 private val HEADER_ACCOUNT_DROPDOWN = By.xpath("//nav//div[@class='bui-group__item']/div[contains(@class, 'bui-dropdown')]")
+private val CAR_RENTALS_BUTTON = By.xpath("//a[contains(@class, 'bui-tab__link')][.//*[contains(@class, '-streamline-transport_car')]]")
+private val ATTRACTIONS_BUTTON = By.xpath("//a[contains(@class, 'bui-tab__link')][.//*[contains(@class, '-streamline-attractions')]]")
+private val TAXIS_BUTTON = By.xpath("//a[contains(@class, 'bui-tab__link')][.//*[contains(@class, '-streamline-taxi_sign')]]")
 
 private val CURRENCIES_PATTERN = MessageFormat("//div[@role=''dialog'']//a[normalize-space(.//div[@class=''bui-traveller-header__currency'']/text()) = ''{0}'']")
 private val CHILD_AGE_SELECT_PATTERN = MessageFormat("//*[@id=''xp__guests__inputs-container'']//*[contains(@class, ''sb-group__children__field'')]//select[@name=''age'' and @data-group-child-age=''{0}'']")
@@ -38,9 +41,7 @@ class MainPage(private val driver: WebDriver): CommonPage(driver, Regex("https:/
         driver.findElement(SEARCH_INPUT).sendKeys(text)
     }
 
-    fun clickSearchButton() {
-        driver.findElement(SEARCH_BUTTON).click()
-    }
+    fun clickSearchButton() = driver.findElement(SEARCH_BUTTON).click()
 
     fun pickSearchDates() {
         driver.findElement(CALENDAR_BUTTON).click()
@@ -119,4 +120,7 @@ class MainPage(private val driver: WebDriver): CommonPage(driver, Regex("https:/
     fun clickListPropertyButton() = driver.findElement(HEADER_LIST_PROPERTY_BUTTON).click()
 
     fun isUserLoggedIn() = driver.hasElement(HEADER_ACCOUNT_DROPDOWN)
+    fun clickCarRentalsButton() = driver.findElement(CAR_RENTALS_BUTTON).click()
+    fun clickAttractionsButton() = driver.findElement(ATTRACTIONS_BUTTON).click()
+    fun clickTaxisButton() = driver.findElement(TAXIS_BUTTON).click()
 }
