@@ -30,7 +30,7 @@ private val SHOW_ON_MAP_BUTTONS = By.xpath("//button[contains(@class, 'show_map'
 private val MAP_WRAPPER = By.xpath("//div[@class='map_full_overlay__wrapper' and contains(@style, 'display: block;')]")
 private val MAP_CLOSE_BUTTON = By.xpath("//div[@class='map_full_overlay__wrapper']/div[@class='map_full_overlay__close']")
 
-private val ADD_TO_FAVOURITE = "//div[contains(@class, 'sr_item')]//button[@data-position='bottom right' and @data-title='Save' and contains(@class, 'lists-sr-dropdown-square-heart wl_improvement')]"
+private val ADD_TO_FAVOURITE = By.xpath("//div[contains(@class, 'sr_item')]//button[@data-position='bottom right' and @data-title='Save' and contains(@class, 'lists-sr-dropdown-square-heart wl_improvement')]")
 private val ADD_TO_FAVOURITE_NAME = By.xpath("//div[contains(@class, 'sr_item')]//div[@class='sr_item_main_block']//h3//span[contains(@class, 'name')]")
 
 private val SHOW_USER_PAGE = By.xpath("//a[@aria-describedby='profile-menu-trigger--title profile-menu-trigger--content' and contains(@href, 'https://secure.booking.com/mydashboard')]")
@@ -154,8 +154,8 @@ class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex
         }
     }
 
-    fun addToFavourite(number: Int): String {
-        driver.findElement(By.xpath("$ADD_TO_FAVOURITE[$number]")).click()
+    fun addToFavourite(index: Int): String {
+        driver.findElements(ADD_TO_FAVOURITE)[index].click()
         return driver.findElement(ADD_TO_FAVOURITE_NAME).text
     }
 
