@@ -138,7 +138,7 @@ class HotelPageTest {
      */
     @ParameterizedTest
     @ProvideWebDrivers
-    fun `go to Stockholm, lose your backbone and check questions`(driver: WebDriver) {
+    fun `go to Stockholm, lose your backbone and test questions`(driver: WebDriver) {
         this.driver = driver
 
         driver.get("https://booking.com")
@@ -154,11 +154,40 @@ class HotelPageTest {
         assertEquals(2, driver.windowHandles.size)
         driver.switchTo().window(driver.windowHandles.toList()[1])
         with (HotelPage(driver)) {
-            assertFalse(isQuestionsPopupOpen())
+            assertFalse(isPopupOpen())
             clickMoreQuestionsButton()
-            assertTrue(isQuestionsPopupOpen())
-            clickCloseQuestionsPopup()
-            assertFalse(isQuestionsPopupOpen())
+            assertTrue(isPopupOpen())
+            clickClosePopup()
+            assertFalse(isPopupOpen())
+        }
+    }
+
+    /**
+     * Когда кто-то использует километры в час вместо чашкек чая в колонизированную нацию:
+     */
+    @ParameterizedTest
+    @ProvideWebDrivers
+    fun `go to London, drink some Earl Grey and test guest reviews`(driver: WebDriver) {
+        this.driver = driver
+
+        driver.get("https://booking.com")
+        with (MainPage(driver)) {
+            typeIntoSearchBox("London")
+            pickSearchDates()
+            clickSearchButton()
+        }
+        with (SearchResultsPage(driver)) {
+            assertTrue(getSearchResults().isNotEmpty())
+            getSearchResults().first().go()
+        }
+        assertEquals(2, driver.windowHandles.size)
+        driver.switchTo().window(driver.windowHandles.toList()[1])
+        with (HotelPage(driver)) {
+            assertFalse(isPopupOpen())
+            clickGuestReviewsButton()
+            assertTrue(isPopupOpen())
+            clickClosePopup()
+            assertFalse(isPopupOpen())
         }
     }
 

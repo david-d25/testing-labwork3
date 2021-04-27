@@ -1,9 +1,7 @@
 package space.davids_digital.lab3.pages
 
 import org.openqa.selenium.By
-import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
 import org.openqa.selenium.support.ui.WebDriverWait
 import space.davids_digital.lab3.countElements
@@ -19,9 +17,10 @@ private val SHARE_ON_TWITTER = By.xpath("//div[@id='dropdown_secondary_menu']//a
 private val TITLE_ASIDE_RESERVE_BUTTON = By.xpath("//button[@id='hp_book_now_button']")
 private val ROOMS_SELECTORS = By.xpath("//select[contains(@class, 'hprt-nos-select ')]")
 private val RESERVE_BUTTON = By.xpath("//button[contains(@class, 'js-reservation-button') and @type='submit']")
+private val REVIEWS_BUTTON = By.xpath("//a[contains(@class, 'hp_nav_reviews_link')]")
 private val MORE_QUESTIONS_BUTTON = By.xpath("//div[@class='guest-questions-more-cta-wrapper']/button")
-private val QUESTIONS_POPUP_VISIBLE = By.xpath("//div[@role='dialog' and contains(@class, 'sliding-panel-widget') and contains(@class, 'is-shown')]")
-private val QUESTIONS_POPUP_CLOSE_BUTTON = By.xpath("//div[@role='dialog' and contains(@class, 'sliding-panel-widget') and contains(@class, 'is-shown')]//div[@class='sliding-panel-widget-close-button']")
+private val POPUP_VISIBLE = By.xpath("//div[@role='dialog' and contains(@class, 'sliding-panel-widget') and contains(@class, 'is-shown')]")
+private val POPUP_CLOSE_BUTTON = By.xpath("//div[@role='dialog' and contains(@class, 'sliding-panel-widget') and contains(@class, 'is-shown')]//div[@class='sliding-panel-widget-close-button']")
 
 class HotelPage(private val driver: WebDriver): CommonPage(driver, Regex("https://www\\.booking\\.com/hotel.*")) {
     fun isLiked() = driver.hasElement(LIKE_BUTTON_ACTIVE)
@@ -50,7 +49,8 @@ class HotelPage(private val driver: WebDriver): CommonPage(driver, Regex("https:
             .until { getRoomSelectorValue(index) == value }
     }
 
+    fun clickGuestReviewsButton() = driver.findElement(REVIEWS_BUTTON).click()
     fun clickMoreQuestionsButton() = driver.findElement(MORE_QUESTIONS_BUTTON).click()
-    fun isQuestionsPopupOpen() = driver.hasElement(QUESTIONS_POPUP_VISIBLE)
-    fun clickCloseQuestionsPopup() = driver.findElement(QUESTIONS_POPUP_CLOSE_BUTTON).click()
+    fun isPopupOpen() = driver.hasElement(POPUP_VISIBLE)
+    fun clickClosePopup() = driver.findElement(POPUP_CLOSE_BUTTON).click()
 }
