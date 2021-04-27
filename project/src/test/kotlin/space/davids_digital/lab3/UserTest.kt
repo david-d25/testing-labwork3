@@ -36,12 +36,15 @@ class UserTest {
         }
 
         val resultsPage = SearchResultsPage(driver)
-        val expected = resultsPage.addToFavourite(5)
+        val expected = resultsPage.addToFavourite(1)
         resultsPage.showFavourites()
 
         val favouritesPage = FavouritesPage(driver)
         Assertions.assertTrue(favouritesPage.isSavedElementPresented(expected))
 
+        favouritesPage.deleteFavourites()
+        driver.navigate().refresh()
+        Assertions.assertFalse(favouritesPage.isSavedElementPresented(expected))
 
     }
 
