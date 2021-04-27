@@ -38,6 +38,7 @@ private val CHILD_AGE_SELECT_PATTERN = MessageFormat("//*[@id=''xp__guests__inpu
 
 class MainPage(private val driver: WebDriver): CommonPage(driver, Regex("https://www\\.booking\\.com.*")) {
     fun typeIntoSearchBox(text: String) {
+        driver.findElement(SEARCH_INPUT).clear()
         driver.findElement(SEARCH_INPUT).sendKeys(text)
     }
 

@@ -30,6 +30,12 @@ private val SHOW_ON_MAP_BUTTONS = By.xpath("//button[contains(@class, 'show_map'
 private val MAP_WRAPPER = By.xpath("//div[@class='map_full_overlay__wrapper' and contains(@style, 'display: block;')]")
 private val MAP_CLOSE_BUTTON = By.xpath("//div[@class='map_full_overlay__wrapper']/div[@class='map_full_overlay__close']")
 
+private val ADD_TO_FAVOURITE = "//div[contains(@class, 'sr_item')]//button[@data-position='bottom right' and @data-title='Save' and contains(@class, 'lists-sr-dropdown-square-heart wl_improvement')]"
+private val ADD_TO_FAVOURITE_NAME = By.xpath("//div[contains(@class, 'sr_item')]//div[@class='sr_item_main_block']//h3//span[contains(@class, 'name')]")
+
+private val SHOW_USER_PAGE = By.xpath("//a[@aria-describedby='profile-menu-trigger--title profile-menu-trigger--content' and contains(@href, 'https://secure.booking.com/mydashboard')]")
+private val OPEN_FAVOURITES = By.xpath("//a[@class='bui-dropdown-menu__button' and contains(@href, '/mywishlist.')]")
+
 private val ASIDE_FORM_CHILD_AGE_PATTERN = MessageFormat("//form[@id=''frm'']//select[@name=''age'' and @data-group-child-age=''{0}'']")
 
 class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex("https://www\\.booking\\.com/searchresults.*")) {
@@ -147,4 +153,20 @@ class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex
             }
         }
     }
+
+    fun addToFavourite(number: Int): String {
+        driver.findElement(By.xpath("$ADD_TO_FAVOURITE[$number]")).click()
+        return driver.findElement(ADD_TO_FAVOURITE_NAME).text
+    }
+
+    fun showUserPage() {
+        driver.findElement(SHOW_USER_PAGE).click()
+    }
+
+    fun showFavourites() {
+        driver.findElement(SHOW_USER_PAGE).click()
+        driver.findElement(OPEN_FAVOURITES).click()
+    }
+
+
 }
