@@ -3,6 +3,7 @@ package space.davids_digital.lab3.pages
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.Select
+import space.davids_digital.lab3.hasElement
 import java.text.MessageFormat
 
 private val SEARCH_INPUT = By.xpath("//input[@name='ss']")
@@ -27,6 +28,7 @@ private val CURRENCY_BUTTON_CURRENCY_CODE = By.xpath("//header//button[@data-mod
 private val HEADER_REGISTER_SIGN_IN_BUTTONS = By.xpath("//header//a[contains(@class, 'js-header-login-link')]")
 private val HEADER_CUSTOMER_SERVICE_BUTTON = By.xpath("//header//a[contains(@class, 'bui-button')][.//*[contains(@class, '-streamline-question_mark_circle')]]")
 private val HEADER_LIST_PROPERTY_BUTTON = By.xpath("//div[@class='bui-group__item' and .//*[contains(@class, '-streamline-property_add')]]/a")
+private val HEADER_ACCOUNT_DROPDOWN = By.xpath("//nav//div[@class='bui-group__item']/div[contains(@class, 'bui-dropdown')]")
 
 private val CURRENCIES_PATTERN = MessageFormat("//div[@role=''dialog'']//a[normalize-space(.//div[@class=''bui-traveller-header__currency'']/text()) = ''{0}'']")
 private val CHILD_AGE_SELECT_PATTERN = MessageFormat("//*[@id=''xp__guests__inputs-container'']//*[contains(@class, ''sb-group__children__field'')]//select[@name=''age'' and @data-group-child-age=''{0}'']")
@@ -115,4 +117,6 @@ class MainPage(private val driver: WebDriver): CommonPage(driver, Regex("https:/
     fun clickHeaderSignInButton() = driver.findElements(HEADER_REGISTER_SIGN_IN_BUTTONS)[1].click()
     fun clickCustomerServiceButton() = driver.findElement(HEADER_CUSTOMER_SERVICE_BUTTON).click()
     fun clickListPropertyButton() = driver.findElement(HEADER_LIST_PROPERTY_BUTTON).click()
+
+    fun isUserLoggedIn() = driver.hasElement(HEADER_ACCOUNT_DROPDOWN)
 }
