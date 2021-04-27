@@ -2,9 +2,12 @@ package space.davids_digital.lab3.pages
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
+import org.openqa.selenium.support.ui.WebDriverWait
 import space.davids_digital.lab3.hasElement
 import java.text.MessageFormat
+import java.time.Duration
 
 private val SEARCH_INPUT = By.xpath("//input[@name='ss']")
 private val SEARCH_BUTTON = By.xpath("//form[@id='frm']//button[@type='submit']")
