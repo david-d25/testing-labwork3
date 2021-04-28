@@ -50,8 +50,8 @@ class UserTest {
         Assertions.assertFalse(favouritesPage.isSavedElementPresented(expected))
     }
 
-//    @AfterEach
-//    fun tearDown() {
-//        driver.quit()
-//    }
+    @AfterEach
+    fun tearDown() {
+        driver.quit()
+    }
 }
