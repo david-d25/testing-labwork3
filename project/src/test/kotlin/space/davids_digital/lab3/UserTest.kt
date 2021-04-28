@@ -32,8 +32,8 @@ class UserTest {
         }
 
         with(mainPage) {
-            typeIntoSearchBox("Ivanovo")
-//            pickSearchDates()
+            typeIntoSearchBox("Tokyo")
+            pickSearchDates()
             clickSearchButton()
         }
 
@@ -42,14 +42,16 @@ class UserTest {
         resultsPage.showFavourites()
 
         val favouritesPage = FavouritesPage(driver)
+
+        Thread.sleep(2000)
         Assertions.assertTrue(favouritesPage.isSavedElementPresented(expected))
         favouritesPage.deleteFavourites()
         driver.navigate().refresh()
         Assertions.assertFalse(favouritesPage.isSavedElementPresented(expected))
     }
 
-    @AfterEach
-    fun tearDown() {
-        driver.quit()
-    }
+//    @AfterEach
+//    fun tearDown() {
+//        driver.quit()
+//    }
 }

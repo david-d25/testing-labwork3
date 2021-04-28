@@ -155,7 +155,7 @@ class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex
     }
 
     fun addToFavourite(index: Int): String {
-        driver.findElements(ADD_TO_FAVOURITE)[index].click()
+        driver.findElements(ADD_TO_FAVOURITE)[index-1].click()
         return driver.findElement(ADD_TO_FAVOURITE_NAME).text
     }
 
