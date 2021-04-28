@@ -159,6 +159,10 @@ class SearchResultsPage(private val driver: WebDriver): CommonPage(driver, Regex
         return driver.findElement(ADD_TO_FAVOURITE_NAME).text
     }
 
+    fun isAddedToFavorites(): Boolean {
+        return driver.findElement(By.xpath("//div[@class='fly-dropdown wl-dropdown dmw-bui-wl-dropdown fly-dropdown_bottom fly-dropdown_arrow-right']")) != null
+    }
+
     fun showUserPage() {
         driver.findElement(SHOW_USER_PAGE).click()
     }

@@ -3,7 +3,9 @@ package space.davids_digital.lab3
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
+import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import space.davids_digital.lab3.pages.*
 import java.time.Duration
@@ -39,15 +41,21 @@ class UserTest {
 
         val resultsPage = SearchResultsPage(driver)
         val expected = resultsPage.addToFavourite(1)
-        resultsPage.showFavourites()
 
-        val favouritesPage = FavouritesPage(driver)
+        WebDriverWait(driver, 10).until { ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='fly-dropdown wl-dropdown dmw-bui-wl-dropdown fly-dropdown_bottom fly-dropdown_arrow-right']")) }
 
-        Thread.sleep(2000)
-        Assertions.assertTrue(favouritesPage.isSavedElementPresented(expected))
-        favouritesPage.deleteFavourites()
-        driver.navigate().refresh()
-        Assertions.assertFalse(favouritesPage.isSavedElementPresented(expected))
+        Assertions.assertTrue(resultsPage.isAddedToFavorites())
+
+
+//        resultsPage.showFavourites()
+//
+//        val favouritesPage = FavouritesPage(driver)
+//
+//        Thread.sleep(2000)
+//        Assertions.assertTrue(favouritesPage.isSavedElementPresented(expected))
+//        favouritesPage.deleteFavourites()
+//        driver.navigate().refresh()
+//        Assertions.assertFalse(favouritesPage.isSavedElementPresented(expected))
     }
 
     @AfterEach
