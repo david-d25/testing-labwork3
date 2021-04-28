@@ -3,11 +3,12 @@ package space.davids_digital.lab3.pages
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import space.davids_digital.lab3.hasElement
+
+private val SAVED_ELEMENT_TITLE = By.xpath("//div[contains(@class, 'listview-hotel-pob')]//a[@class='js-listview-book js-listview-hotel-title']")
+private val DELETE_BUTTON = By.xpath("//div[contains(@class, 'listview-hotel-pob')]//a[@class='js-remove-hotel listview__remove_hotel_icon']")
 
 class FavouritesPage(private val driver: WebDriver): CommonPage(driver, Regex("https://www\\.booking\\.com/mywishlist.*")) {
-    private val SAVED_ELEMENT_TITLE = By.xpath("//div[contains(@class, 'listview-hotel-pob')]//a[@class='js-listview-book js-listview-hotel-title']")
-    private val DELETE_BUTTON = By.xpath("//div[contains(@class, 'listview-hotel-pob')]//a[@class='js-remove-hotel listview__remove_hotel_icon']")
-
     fun isSavedElementPresented(name: String): Boolean {
         val find: WebElement
         return try {
@@ -19,9 +20,8 @@ class FavouritesPage(private val driver: WebDriver): CommonPage(driver, Regex("h
     }
 
     fun deleteFavourites() {
-        Thread.sleep(2000) //todo if remove, org.openqa.selenium.StaleElementReferenceException: stale element reference: element is not attached to the page document appears
-
-        return driver.findElements(DELETE_BUTTON).forEach { it.click() }
+        while (driver.hasElement(DELETE_BUTTON))
+            driver.findElement(DELETE_BUTTON).click()
     }
 
 }
